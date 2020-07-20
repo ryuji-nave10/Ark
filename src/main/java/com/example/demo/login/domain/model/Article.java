@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class Article {
-
+	
 	private String name; // ユーザー名
 	private String title; // 作品タイトル
 	private String theme; // 作品テーマ

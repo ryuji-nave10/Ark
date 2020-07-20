@@ -10,15 +10,23 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import com.example.demo.login.domain.model.Article;
+import com.example.demo.login.domain.model.ArticleupForm;
+import com.example.demo.login.domain.model.GroupOrder;
 import com.example.demo.login.domain.model.SignupForm;
 import com.example.demo.login.domain.model.User;
+import com.example.demo.login.domain.service.ArticleService;
 import com.example.demo.login.domain.service.UserService;
 
 @Controller
@@ -26,7 +34,10 @@ public class HomeController {
 
 	@Autowired
 	UserService userService;
-
+	
+	@Autowired
+	ArticleService articleService;
+	
 	// 結婚ステータスのラジオボタン用変数
 	private Map<String, String> radioMarriage;
 
@@ -53,8 +64,77 @@ public class HomeController {
 		// コンテンツ部分にユーザー詳細を表示するための文字列を登録
 		model.addAttribute("contents", "login/home :: home_contents");
 
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		//Principalからログインユーザの情報を取得
+		String userName = auth.getName();
+		model.addAttribute("userName", userName);
 		return "login/homeLayout";
 	}
+	
+	@GetMapping("/articleup")
+	public String getArticleUp(@ModelAttribute ArticleupForm form, Model model) {
+		// コンテンツ部分にユーザー詳細を表示するための文字列を登録
+		model.addAttribute("contents", "login/articleup :: articleup_contents");
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		//Principalからログインユーザの情報を取得
+		String userName = auth.getName();
+		model.addAttribute("userName", userName);
+		// articleup.htmlに画面遷移
+		return "login/homeLayout";
+	}
+	
+	@PostMapping("/articleup")
+	public String postArticleUp(@ModelAttribute @Validated(GroupOrder.class)
+			ArticleupForm form, BindingResult bindingResult, Model model){
+				
+		// 入力チェックに引っかかった場合、投稿画面に戻る
+		if(bindingResult.hasErrors()) {
+			// GETリクエスト用のメソッドを呼び出して、投稿画面に戻る
+			return getArticleUp(form, model);
+		}
+		// formの中身をコンソールに出して確認します
+		System.out.println(form);
+		
+		// insert用変数
+		Article article = new Article();
+		
+		article.setName(form.getName()); // ユーザー名
+		article.setTitle(form.getTitle()); // タイトル
+		article.setTheme(form.getTheme()); // テーマ
+		article.setOverview(form.getOverview()); // 作品概要
+		
+		boolean result = articleService.insert(article);
+		
+		// ユーザー登録結果の判定
+		if(result == true) {
+			System.out.println("insert成功");
+		} else {
+			System.out.println("insert失敗");
+		}
+		
+		 return getArticleList(model);
+	}
+	
+	
+	// 投稿一覧のGETメソッド用処理
+	@GetMapping("/articleList")
+	public String getArticleList(Model model) {
+		// コンテンツ部分に投稿一覧を表示するための文字列を登録
+		model.addAttribute("contents", "login/articleList :: articleList_contents");
+		
+		// 投稿一覧の生成
+		List<Article> articleList = articleService.selectMany();
+		
+		// Modelに作品リストを登録
+		model.addAttribute("articleList", articleList);
+		
+		// データ件数を取得
+		int count = articleService.count();
+		model.addAttribute("articleListCount", count);
+		
+		return "login/homeLayout";
+	}
+	
 
 	/**
 	 * ユーザー一覧画面のGETメソッド用処理.
@@ -179,6 +259,100 @@ public class HomeController {
 
 		// ユーザー一覧画面を表示
 		return getUserList(model);
+	}
+	
+	/**
+	 * ユーザー詳細画面のGETメソッド用処理.
+	 */
+	@GetMapping("/articleDetail/{name}")
+	public String getUserDetail(@ModelAttribute ArticleupForm form, Model model, @PathVariable("name") String name) {
+
+		// ユーザーID確認（デバッグ）
+		System.out.println("name = " + name);
+
+		// コンテンツ部分にユーザー詳細を表示するための文字列を登録
+		model.addAttribute("contents", "login/articleDetail :: articleDetail_contents");
+
+		// ユーザーIDのチェック
+		if (name != null && name.length() > 0) {
+
+			// ユーザー情報を取得
+			Article article = articleService.selectOne(name);
+
+			// Userクラスをフォームクラスに変換
+			form.setName(article.getName()); // ユーザー名
+			form.setTitle(article.getTitle()); // タイトル
+			form.setTheme(article.getTheme()); // テーマ
+			form.setOverview(article.getOverview()); // 概要
+
+			// Modelに登録
+			model.addAttribute("articleupForm", form);
+		}
+
+		return "login/homeLayout";
+	}
+
+	/**
+	 * ユーザー更新用処理.
+	 */
+	@PostMapping(value = "/articleDetail", params = "update")
+	public String postUserDetailUpdate(@ModelAttribute ArticleupForm form, Model model) {
+
+		System.out.println("更新ボタンの処理");
+
+		// Userインスタンスの生成
+		Article article = new Article();
+
+		// フォームクラスをUserクラスに変換
+		form.setName(article.getName()); // ユーザー名
+		form.setTitle(article.getTitle()); // タイトル
+		form.setTheme(article.getTheme()); // テーマ
+		form.setOverview(article.getOverview()); // 概要
+
+		try {
+
+			// 更新実行
+			boolean result = articleService.updateOne(article);
+
+			if (result == true) {
+				model.addAttribute("result", "更新成功");
+			} else {
+				model.addAttribute("result", "更新失敗");
+			}
+
+		} catch (DataAccessException e) {
+
+			model.addAttribute("result", "更新失敗(トランザクションテスト)");
+
+		}
+
+		// ユーザー一覧画面を表示
+		return getUserList(model);
+	}
+
+	/**
+	 * ユーザー削除用処理.
+	 */
+	@PostMapping(value = "/articleDetail", params = "delete")
+	public String postUserDetailDelete(@ModelAttribute ArticleupForm form, Model model) {
+
+		System.out.println("削除ボタンの処理");
+
+		// 削除実行
+		boolean result = articleService.deleteOne(form.getName());
+
+		if (result == true) {
+
+			model.addAttribute("result", "削除成功");
+
+		} else {
+
+			model.addAttribute("result", "削除失敗");
+
+		}
+
+		// ユーザー一覧画面を表示
+		return getArticleList(model);
 	}
 
 	/**

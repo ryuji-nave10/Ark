@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8"></meta>
+</head>
+<body>
+    <div th:fragment="articleDetail_contents">
+        <div class="row">
+            <div class="col-sm-10">
+                <div class="page-header">
+                    <h1>作品詳細</h1>
+                </div>
+                <form method="post" th:action="@{/articleDetail}" th:object="${articleupForm}">
+                    <table class="table table-bordered table-hover">
+                        <tr>
+                            <!-- ユーザー名（入力不可） -->
+                            <th class="active col-sm-2">ID_作品番号</th>
+                            <td class="col-sm-9">
+                                <div class="form-group">
+                                    <input type="text" class="form-control"
+                                        th:field="*{name}"
+                                        readonly="readonly" />
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <!-- タイトル -->
+                            <th class="active">タイトル</th>
+                            <td>
+                                <div class="form-group"
+                                    th:classappend="${#fields.hasErrors('title')} ? 'has-error'">
+                                    <input type="text" class="form-control"
+                                        th:field="*{title}" />
+                                    <span class="text-danger"
+                                        th:if="${#fields.hasErrors('title')}"
+                                        th:errors="*{title}">
+                                        title error
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <!-- テーマ -->
+                            <th class="active">作品テーマ</th>
+                            <td>
+                                <div class="form-group"
+                                    th:classappend="${#fields.hasErrors('theme')} ? 'has-error'">
+                                    <input type="text" class="form-control"
+                                        th:field="*{theme}" />
+                                    <span class="text-danger"
+                                        th:if="${#fields.hasErrors('theme')}"
+                                        th:errors="*{theme}">
+                                        theme error
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <!-- 年齢 -->
+                            <th class="active">作品概要</th>
+                            <td>
+                                <div class="form-group"
+                                    th:classappend="${#fields.hasErrors('overview')} ? 'has-error'">
+                                    <textarea rows="5" cols="80" type="text" class="form-control"
+                                        th:field="*{overview}" />
+                                    <span class="text-danger"
+                                        th:if="${#fields.hasErrors('overview')}"
+                                        th:errors="*{overview}">
+                                        overview error
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <!-- 更新ボタン -->
+                    <button class="btn btn-primary btn-lg pull-right"
+                        type="submit"
+                        name="update">
+                        更新
+                    </button>
+                    <!-- 削除ボタン -->
+                    <button class="btn btn-danger btn-lg" type="submit" name="delete">
+                        削除
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -10,9 +10,10 @@ CREATE TABLE IF NOT EXISTS m_user (
 );
 
 CREATE TABLE IF NOT EXISTS article (
-	name VARCHAR(50),
+	name VARCHAR(50) PRIMARY KEY,
 	title VARCHAR(50),
 	theme VARCHAR(50),
+	user_name VARCHAR(50),
 	overview VARCHAR(200)
 );
 	
