@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8"></meta>
+    <title>作品投稿</title>
+</head>
+<body>
+    <div th:fragment="articleup_contents">
+        <div class="page-header">
+            <h1>作品投稿</h1>
+        </div>
+        <div class="col-sm-8">
+		<form method="post" th:action="@{/articleup}"
+			th:object="${articleupForm}">
+			<table class="table table-bordered table-hover">
+				<!-- ユーザーIDの入力エリア -->
+				<tr>
+					<th class="active col-sm-3">ID_作品番号 <br>
+					⚠︎重複NG</th>
+					<td>
+						<div class="form-group"
+							th:classappend="${#fields.hasErrors('name')} ? 'has-error'">
+							<input type="text" th:placeholder=${userName} class="form-control" th:field="*{name}" />
+							<span class="text-danger" th:if="${#fields.hasErrors('name')}"
+								th:errors="*{name}"> name error </span>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<th class="active col-sm-3">タイトル</th>
+					<td>
+						<div class="form-group"
+							th:classappend="${#fields.hasErrors('title')} ? 'has-error'">
+							<input type="text" value="" placeholder="" class="form-control" th:field="*{title}" />
+							<span class="text-danger" th:if="${#fields.hasErrors('title')}"
+								th:errors="*{title}"> title error </span>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<th class="active col-sm-3">作品テーマ</th>
+					<td>
+						<div class="form-group"
+							th:classappend="${#fields.hasErrors('theme')} ? 'has-error'">
+							<input type="text" class="form-control" th:field="*{theme}" />
+							<span class="text-danger" th:if="${#fields.hasErrors('theme')}"
+								th:errors="*{theme}"> theme error </span>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<th class="active col-sm-3">作品概要</th>
+					<td>
+						<div class="form-group"
+							th:classappend="${#fields.hasErrors('overview')} ? 'has-error'">
+							<textarea rows="3" cols="80" class="form-control" th:field="*{overview}" />
+							<span class="text-danger" th:if="${#fields.hasErrors('overview')}"
+								th:errors="*{overview}"> name error </span>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<th class="active col-sm-3">画像を選択</th>
+						<td>
+							<div class="form-group">
+								<input type="file" id="file1"class="form-control-file">
+							</div>
+						</td>
+					</tr>
+			</table>
+			<ul>
+                <li th:each="error : ${#fields.detailedErrors()}">
+                    <span th:text="${error.message}">Error message</span>
+                </li>
+            </ul>
+            <!-- ユーザー登録ボタン -->
+            <button class="btn btn-primary" type="submit">作品投稿</button>
+		</form>
+		</div>
+	</div>
+</body>
+</html>

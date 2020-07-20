@@ -1,7 +1,6 @@
 package com.example.demo.login.domain.service;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -15,8 +14,9 @@ import com.example.demo.login.domain.repository.ArticleDao;
 public class ArticleService {
 
 	@Autowired
-	@Qualifier("ArtilceDaoJdbcImpl")
+	@Qualifier("ArticleDaoJdbcImpl")
 	ArticleDao dao;
+	
 	
 	// insert用メソッド
 	public boolean insert(Article article) {
