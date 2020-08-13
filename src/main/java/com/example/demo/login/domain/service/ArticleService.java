@@ -46,9 +46,9 @@ public class ArticleService {
 	}
 	
 	// １件取得用メソッド
-	public Article selectOne(String name) {
+	public Article selectOne(int id) {
 		// selectOne実行
-		return dao.selectOne(name);
+		return dao.selectOne(id);
 	}
 	
 	// １件更新用メソッド
@@ -66,9 +66,9 @@ public class ArticleService {
 	}
 	
 	// １件削除用メソッド
-	public boolean deleteOne(String name) {
+	public boolean deleteOne(String overview, String name) {
 		// １件削除
-		int rowNumber = dao.deleteOne(name);
+		int rowNumber = dao.deleteOne(overview, name);
 		// 判定用変数
 		boolean result = false;
 		

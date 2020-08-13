@@ -9,3 +9,4 @@ VALUES('tamura002', '$2a$10$xRTXvpMWly0oGiu65WZlm.3YL95LGVV2ASFjDhe6WF4.Qji1huIP
 /* 作品のデータ */
 INSERT INTO article (name, title, theme, user_name, overview)
 VALUES ('yamada001_1', '日常風景', 'APEX', '船戸龍二', 'レジェンドの普段の１日を描いてみました,レジェンドの普段の１日を描いてみました,レジェンドの普段の１日を描いてみました'),('Nave_1', '戦闘', 'APEX', '龍二', 'レジェンドの普段の１日を描いてみました,レジェンドの普段の１日を描いてみました,レジェンドの普段の１日を描いてみました');
+

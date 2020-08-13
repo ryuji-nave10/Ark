@@ -43,16 +43,17 @@ public class ArticleDaoJdbcImpl implements ArticleDao {
 	}
 	
 	// Articleテーブルのデータを１件取得
-	public Article selectOne(String name) throws DataAccessException {
+	public Article selectOne(int id) throws DataAccessException {
 		
 		// １件取得
 		Map<String, Object> map = jdbc.queryForMap("SELECT * FROM article"
-											+ " WHERE name = ?", name);
+											+ " WHERE id = ?", id);
 		
 		// 結果返却用の変数
 		Article article = new Article();
 		
 		// 取得したデータを結果返却用の変数にセットする
+		article.setId((int) map.get("id"));
 		article.setName((String) map.get("name"));
 		article.setTitle((String) map.get("title"));
 		article.setTheme((String) map.get("theme"));
@@ -78,6 +79,7 @@ public class ArticleDaoJdbcImpl implements ArticleDao {
 			Article article = new Article();
 			
 			// Articleインスタンスに取得したデータをセットする
+			article.setId((int) map.get("id"));
 			article.setName((String) map.get("name"));
 			article.setTitle((String) map.get("title"));
 			article.setTheme((String) map.get("theme"));
@@ -96,7 +98,7 @@ public class ArticleDaoJdbcImpl implements ArticleDao {
 		// １件更新
 		int rowNumber = jdbc.update(
 				"UPDATE ARTICLE" + " SET" + " title = ?," + " theme = ?,"
-						+ " overview = ?," + " WHERE name = ?",
+						+ " overview = ?" + " WHERE name = ?",
 					article.getTitle(), article.getTheme(), article.getOverview(), 
 					article.getName());
 		
@@ -104,10 +106,10 @@ public class ArticleDaoJdbcImpl implements ArticleDao {
 	}
 	
 	@Override
-	public int deleteOne(String name) throws DataAccessException {
+	public int deleteOne(String overview, String name) throws DataAccessException {
 		
 		// 	１件削除
-		int rowNumber = jdbc.update("DELETE FROM article WHERE name = ?", name);
+		int rowNumber = jdbc.update("DELETE FROM article WHERE overview = ? AND name = ? ", overview, name);
 		
 		return rowNumber;
 	}

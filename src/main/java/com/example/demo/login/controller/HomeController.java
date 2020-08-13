@@ -264,22 +264,23 @@ public class HomeController {
 	/**
 	 * ユーザー詳細画面のGETメソッド用処理.
 	 */
-	@GetMapping("/articleDetail/{name}")
-	public String getUserDetail(@ModelAttribute ArticleupForm form, Model model, @PathVariable("name") String name) {
+	@GetMapping("/articleDetail/{id}")
+	public String getArticleDetail(@ModelAttribute ArticleupForm form, Model model, @PathVariable("id") int id) {
 
 		// ユーザーID確認（デバッグ）
-		System.out.println("name = " + name);
+		System.out.println("id = " + id);
 
 		// コンテンツ部分にユーザー詳細を表示するための文字列を登録
 		model.addAttribute("contents", "login/articleDetail :: articleDetail_contents");
 
 		// ユーザーIDのチェック
-		if (name != null && name.length() > 0) {
+		if (id != 0) {
 
 			// ユーザー情報を取得
-			Article article = articleService.selectOne(name);
+			Article article = articleService.selectOne(id);
 
 			// Userクラスをフォームクラスに変換
+			form.setId(article.getId());
 			form.setName(article.getName()); // ユーザー名
 			form.setTitle(article.getTitle()); // タイトル
 			form.setTheme(article.getTheme()); // テーマ
@@ -296,7 +297,7 @@ public class HomeController {
 	 * ユーザー更新用処理.
 	 */
 	@PostMapping(value = "/articleDetail", params = "update")
-	public String postUserDetailUpdate(@ModelAttribute ArticleupForm form, Model model) {
+	public String postArticleDetailUpdate(@ModelAttribute ArticleupForm form, Model model) {
 
 		System.out.println("更新ボタンの処理");
 
@@ -304,10 +305,11 @@ public class HomeController {
 		Article article = new Article();
 
 		// フォームクラスをUserクラスに変換
-		form.setName(article.getName()); // ユーザー名
-		form.setTitle(article.getTitle()); // タイトル
-		form.setTheme(article.getTheme()); // テーマ
-		form.setOverview(article.getOverview()); // 概要
+		article.setId(form.getId());
+		article.setName(form.getName());
+		article.setTitle(form.getTitle());
+		article.setTheme(form.getTheme());
+		article.setOverview(form.getOverview());
 
 		try {
 
@@ -327,19 +329,19 @@ public class HomeController {
 		}
 
 		// ユーザー一覧画面を表示
-		return getUserList(model);
+		return getArticleList(model);
 	}
 
 	/**
 	 * ユーザー削除用処理.
 	 */
 	@PostMapping(value = "/articleDetail", params = "delete")
-	public String postUserDetailDelete(@ModelAttribute ArticleupForm form, Model model) {
+	public String postArticleDetailDelete(@ModelAttribute ArticleupForm form, Model model) {
 
 		System.out.println("削除ボタンの処理");
 
 		// 削除実行
-		boolean result = articleService.deleteOne(form.getName());
+		boolean result = articleService.deleteOne(form.getOverview(), form.getName());
 
 		if (result == true) {
 

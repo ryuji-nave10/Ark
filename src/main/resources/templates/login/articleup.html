@@ -16,12 +16,11 @@
 			<table class="table table-bordered table-hover">
 				<!-- ユーザーIDの入力エリア -->
 				<tr>
-					<th class="active col-sm-3">ID_作品番号 <br>
-					⚠︎重複NG</th>
+					<th class="active col-sm-3">作者名</th>
 					<td>
 						<div class="form-group"
 							th:classappend="${#fields.hasErrors('name')} ? 'has-error'">
-							<input type="text" th:placeholder=${userName} class="form-control" th:field="*{name}" />
+							<input type="text" th:value=${userName} class="form-control" th:field="*{name}" />
 							<span class="text-danger" th:if="${#fields.hasErrors('name')}"
 								th:errors="*{name}"> name error </span>
 						</div>
