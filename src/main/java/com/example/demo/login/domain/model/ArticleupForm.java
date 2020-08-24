@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 public class ArticleupForm {
 
-	private int id;
+	private Long id;
 	// 必須入力
 	@NotBlank(groups = ValidGroup1.class, message = "{require_check}")
 	private String name; // ユーザー名
