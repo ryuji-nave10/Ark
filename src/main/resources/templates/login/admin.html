@@ -8,8 +8,69 @@
 <body>
     <div th:fragment="admin_contents">
         <div class="page-header">
-            <h1>アドミン権限専用画面</h1>
+            <h1>投稿一覧</h1>
         </div>
+        <table class="table table-bordered table-hover table-striped">
+            <tr>
+                <th class="info col-sm-2">ID_作品番号</th>
+                <th class="info col-sm-2">タイトル</th>
+                <th class="info col-sm-2">テーマ</th>
+                <th class="info col-sm-2"></th>
+            </tr>
+            <tr th:each="article : ${pageList}">
+                <td th:text="${article.name}"></td>
+                <td th:text="${article.title}"></td>
+                <td th:text="${article.theme}"></td>
+                <td>
+                    <!-- ユーザー詳細画面へのリンク -->
+                    <a class="btn btn-primary" th:href="@{'/articleDetail/' + ${article.id}}" >
+                        詳細
+                    </a>
+                </td>
+            </tr>
+        </table>
+        <div class=right>
+        <div th:if="${maxpage} != ${page}">
+        	<label th:text="${pages} + 'ページ'"></label>
+        </div>
+        <div th:if="${maxpage} == ${page}">
+        	<label th:text="${maxpage} + 'ページ'"></label>
+        </div>
+        <div th:if="${pages} == 1">
+        <ul class=pageable>
+        <a>&nbsp;</a>
+        <a>&nbsp;</a>
+        <a>&nbsp;</a>
+        <a>&nbsp;</a>
+        <a>&nbsp;</a>
+        <a>&nbsp;</a>
+        <a th:href="@{'/admin/' + ${pages}}">→次</a>
+        <a th:href="@{'/admin/' + ${maxpage}}">&gt;&gt;</a>
+        </ul>
+        </div>
+        <div th:if="${pages} != 1 ">
+        <div th:if="${pages} > ${maxpage}">
+        <ul class=pageable>
+        <a th:href="@{'/admin'}">&lt;&lt;</a>
+        <a th:href="@{'/admin/' + ${backpage}}">←前</a>
+        </ul>
+        </div>
+        <div th:if="${pages} <= ${maxpage}">
+        <ul class=pageable>
+        <a th:href="@{'/admin'}">&lt;&lt;</a>
+        <a th:href="@{'/admin/' + ${backpage}}">←前</a>
+        <a th:href="@{'/admin/' + ${pages}}">次→</a>
+        <a th:href="@{'/admin/' + ${maxpage}}">&gt;&gt;</a>
+        </ul>
+        </div>
+        
+        
+        <br/>
+        <!-- ユーザー一覧の件数 -->
+        <label th:text="${pages} + '0件 /' + ${articleListCount} + '件' "></label><br/>
+        <!-- 更新・削除処理の結果表示用 -->
+        <label class="text-info" th:text="${result}">結果表示</label><br/>
+    </div>
     </div>
 </body>
 </html>

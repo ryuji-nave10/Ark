@@ -16,11 +16,13 @@
                 <th class="info col-sm-2">タイトル</th>
                 <th class="info col-sm-2">テーマ</th>
                 <th class="info col-sm-2"></th>
+                <th class="info col-sm-1"></th>
             </tr>
             <tr th:each="article : ${articleList}">
                 <td th:text="${article.name}"></td>
                 <td th:text="${article.title}"></td>
                 <td th:text="${article.theme}"></td>
+                <td></td>
                 <td>
                     <!-- ユーザー詳細画面へのリンク -->
                     <a class="btn btn-primary" th:href="@{'/articleDetail/' + ${article.id}}" >

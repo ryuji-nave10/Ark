@@ -45,8 +45,23 @@ public class ArticleService {
 		return dao.selectMany();
 	}
 	
+	public List<Article> pageTopSelect(){
+		
+		return dao.pageTopSelect();
+	}
+	
+	Article article;
+	
+	public List<Article> pageNextSelect(int page){
+		if (page == 0) {
+			return dao.pageTopSelect();
+		}else {
+			return dao.pageNextSelect(page);
+		}
+	}
+	
 	// １件取得用メソッド
-	public Article selectOne(int id) {
+	public Article selectOne(Long id) {
 		// selectOne実行
 		return dao.selectOne(id);
 	}

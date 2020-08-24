@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpHeaders;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-
 import com.example.demo.login.domain.model.Article;
 import com.example.demo.login.domain.model.ArticleupForm;
 import com.example.demo.login.domain.model.GroupOrder;
@@ -135,6 +133,66 @@ public class HomeController {
 		return "login/homeLayout";
 	}
 	
+	@GetMapping("/admin")
+	public String getAdmin(Model model) {
+
+		// コンテンツ部分にユーザー詳細を表示するための文字列を登録
+		model.addAttribute("contents", "login/admin :: admin_contents");
+
+		int pages = Article.page;
+		// 投稿一覧の生成
+		List<Article> pageList = articleService.pageNextSelect(pages);
+		
+		model.addAttribute("pageList", pageList);
+		
+		pages = Article.page + 1;
+		model.addAttribute("pages", pages);
+		
+		// データ件数を取得
+		int count = articleService.count();
+		model.addAttribute("articleListCount", count);
+		int maxpage = count / 10;
+		model.addAttribute("maxpage", maxpage);
+		
+		// レイアウト用テンプレート
+		return "login/homeLayout";
+	}
+	
+	@GetMapping("/admin/{page}")
+	public String getAdmin(Model model, @PathVariable("page") int page) {
+
+		// コンテンツ部分にユーザー詳細を表示するための文字列を登録
+		model.addAttribute("contents", "login/admin :: admin_contents");
+
+		int pages = page * 10;
+		int backpage;
+		
+		// 投稿一覧の生成
+		List<Article> pageList = articleService.pageNextSelect(pages);
+		
+		model.addAttribute("pageList", pageList);
+		
+		if(page == 0) {
+			pages = page + 1;
+			model.addAttribute("pages", pages);
+		} else if(page > 0) {
+			pages = page + 1;
+			backpage = page -1;
+			model.addAttribute("pages", pages);
+			model.addAttribute("backpage", backpage);
+		}
+		// データ件数を取得
+		int count = articleService.count();
+		model.addAttribute("articleListCount", count);
+		int maxpage = (int) Math.ceil(count / 10);
+		model.addAttribute("maxpage", maxpage);
+		if (maxpage == pages) {
+			model.addAttribute("pages", maxpage);
+		}
+		
+		// レイアウト用テンプレート
+		return "login/homeLayout";
+	}	
 
 	/**
 	 * ユーザー一覧画面のGETメソッド用処理.
@@ -265,7 +323,7 @@ public class HomeController {
 	 * ユーザー詳細画面のGETメソッド用処理.
 	 */
 	@GetMapping("/articleDetail/{id}")
-	public String getArticleDetail(@ModelAttribute ArticleupForm form, Model model, @PathVariable("id") int id) {
+	public String getArticleDetail(@ModelAttribute ArticleupForm form, Model model, @PathVariable("id") Long id) {
 
 		// ユーザーID確認（デバッグ）
 		System.out.println("id = " + id);
@@ -402,13 +460,4 @@ public class HomeController {
 	 * @param model Modelクラス
 	 * @return 画面のテンプレート名
 	 */
-	@GetMapping("/admin")
-	public String getAdmin(Model model) {
-
-		// コンテンツ部分にユーザー詳細を表示するための文字列を登録
-		model.addAttribute("contents", "login/admin :: admin_contents");
-
-		// レイアウト用テンプレート
-		return "login/homeLayout";
-	}
 }

@@ -43,7 +43,7 @@ public class ArticleDaoJdbcImpl implements ArticleDao {
 	}
 	
 	// Articleテーブルのデータを１件取得
-	public Article selectOne(int id) throws DataAccessException {
+	public Article selectOne(Long id) throws DataAccessException {
 		
 		// １件取得
 		Map<String, Object> map = jdbc.queryForMap("SELECT * FROM article"
@@ -53,7 +53,7 @@ public class ArticleDaoJdbcImpl implements ArticleDao {
 		Article article = new Article();
 		
 		// 取得したデータを結果返却用の変数にセットする
-		article.setId((int) map.get("id"));
+		article.setId((Long) map.get("id"));
 		article.setName((String) map.get("name"));
 		article.setTitle((String) map.get("title"));
 		article.setTheme((String) map.get("theme"));
@@ -79,7 +79,7 @@ public class ArticleDaoJdbcImpl implements ArticleDao {
 			Article article = new Article();
 			
 			// Articleインスタンスに取得したデータをセットする
-			article.setId((int) map.get("id"));
+			article.setId((Long) map.get("id"));
 			article.setName((String) map.get("name"));
 			article.setTitle((String) map.get("title"));
 			article.setTheme((String) map.get("theme"));
@@ -89,6 +89,58 @@ public class ArticleDaoJdbcImpl implements ArticleDao {
 		}
 		
 		return articleList;
+	}
+	
+	@Override
+	public List<Article> pageTopSelect() throws DataAccessException {
+		
+		List<Map<String, Object>> getList = jdbc.queryForList("SELECT * FROM article ORDER BY id  LIMIT 10 ");
+		// 結果返却用の変数
+		List<Article> articleList = new ArrayList<>();
+				
+		// 取得したデータを結果返却用のListに格納していく
+			for (Map<String, Object> map : getList) {
+				
+				// Articleインスタンスの生成
+				Article article = new Article();
+					
+				// Articleインスタンスに取得したデータをセットする
+				article.setId((Long) map.get("id"));
+				article.setName((String) map.get("name"));
+				article.setTitle((String) map.get("title"));
+				article.setTheme((String) map.get("theme"));
+				article.setOverview((String) map.get("overview"));
+					
+				articleList.add(article);
+			}
+			
+			return articleList;
+	}
+	
+	@Override
+	public List<Article> pageNextSelect(int page) throws DataAccessException {
+		
+		List<Map<String, Object>> getList = jdbc.queryForList("SELECT * FROM article ORDER BY id  LIMIT ? , 10 ", page);
+		// 結果返却用の変数
+			List<Article> articleList = new ArrayList<>();
+						
+			// 取得したデータを結果返却用のListに格納していく
+				for (Map<String, Object> map : getList) {
+						
+						// Articleインスタンスの生成
+					Article article = new Article();
+							
+					// Articleインスタンスに取得したデータをセットする
+					article.setId((Long) map.get("id"));
+					article.setName((String) map.get("name"));
+					article.setTitle((String) map.get("title"));
+					article.setTheme((String) map.get("theme"));
+					article.setOverview((String) map.get("overview"));
+							
+					articleList.add(article);
+					}
+					
+				return articleList;
 	}
 	
 	// Articleテーブルを１件更新

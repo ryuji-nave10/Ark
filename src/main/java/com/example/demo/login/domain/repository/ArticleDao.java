@@ -15,7 +15,7 @@ public interface ArticleDao {
 	public int insertOne(Article article) throws DataAccessException;
 	
 	// Articleテーブルのデータを１件取得
-	public Article selectOne(int id) throws DataAccessException;
+	public Article selectOne(Long id) throws DataAccessException;
 	
 	// Articleテーブルの全データを取得
 	public List<Article> selectMany() throws DataAccessException;
@@ -25,4 +25,8 @@ public interface ArticleDao {
 	
 	// Articleテーブルを１件削除
 	public int deleteOne(String overview, String name) throws DataAccessException;
+	
+	public List<Article> pageTopSelect() throws DataAccessException;
+	
+	public List<Article> pageNextSelect(int page) throws DataAccessException;
 }
